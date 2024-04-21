@@ -3,7 +3,7 @@ package net.xylose.mitemod.breadskin.mixin.gui;
 import java.util.Random;
 import net.minecraft.*;
 
-import net.xylose.mitemod.breadskin.util.Configs;
+import net.xylose.mitemod.breadskin.util.BreadSkinConfigs;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,7 +40,7 @@ public abstract class GuiIngameMixin extends Gui {
         float var15 = this.mc.thePlayer.getAbsorptionAmount();
         int var16 = MathHelper.ceiling_float_int((var14 + var15) / 2.0F / 10.0F);
         int var17 = Math.max(10 - (var16 - 2), 3);
-        int displayY = var13 - (var16 - 1) * var17 - 10 - Configs.Hud_Y.get();
+        int displayY = var13 - (var16 - 1) * var17 - 10 - BreadSkinConfigs.Saturation_Hud_Y.get();
         FoodStats foodStats = this.mc.thePlayer.getFoodStats();
         this.mc.getTextureManager().bindTexture(icons_breadskin);
         this.mc.mcProfiler.endStartSection("fullness");
@@ -48,14 +48,14 @@ public abstract class GuiIngameMixin extends Gui {
         for (int temp = 0; temp < 10; temp++) {
             int textureStartPoint = 34;
             int textureBase = 0;
-            if (Configs.Display_Saturation.get()) {
+            if (BreadSkinConfigs.Display_Saturation.get()) {
                 int satiation = foodStats.getSatiation();
                 if (this.mc.thePlayer.isPotionActive(Potion.hunger)) {
                     textureStartPoint += 27;
                     textureBase = 9;
                 }
                 if (this.mc.thePlayer.isHungry() && this.updateCounter % (satiation * 3 + 1) == 0) {
-                    displayY = var13 - 10 + (this.rand.nextInt(3) - 1) - Configs.Hud_Y.get();
+                    displayY = var13 - 10 + (this.rand.nextInt(3) - 1) - BreadSkinConfigs.Saturation_Hud_Y.get();
                 }
                 int displayX = var12 - temp * 8 - 9;
                 if (temp < this.mc.thePlayer.getFoodStats().getSatiationLimit() / 2) {
@@ -79,7 +79,7 @@ public abstract class GuiIngameMixin extends Gui {
         float var15 = this.mc.thePlayer.getAbsorptionAmount();
         int var16 = MathHelper.ceiling_float_int((var14 + var15) / 2.0F / 10.0F);
         int var17 = Math.max(10 - (var16 - 2), 3);
-        int displayY = var13 - (var16 - 1) * var17 - 20 - Configs.Hud_Y.get();
+        int displayY = var13 - (var16 - 1) * var17 - 20 - BreadSkinConfigs.Saturation_Hud_Y.get();
         int var23;
         int var25;
         int var26;

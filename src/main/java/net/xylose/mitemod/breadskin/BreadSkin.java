@@ -1,22 +1,21 @@
 package net.xylose.mitemod.breadskin;
 
+import fi.dy.masa.malilib.gui.screen.ModsScreen;
 import net.fabricmc.api.ModInitializer;
-import net.xiaoyu233.fml.config.ConfigRegistry;
-import net.xylose.mitemod.breadskin.util.Configs;
-
-import java.io.File;
-import java.util.Optional;
+import net.xylose.mitemod.breadskin.util.BreadSkinConfigs;
 
 public class BreadSkin implements ModInitializer {
-
-    private static final ConfigRegistry CONFIG_REGISTRY = new ConfigRegistry(Configs.ROOT, new File("bread-skin.json"));
-
+//    public static final int CONFIG_VERSION = 1;
+//    private final ConfigRegistry configRegistry = new ConfigRegistry(BreadSkinConfigs.ROOT, BreadSkinConfigs.CONFIG_FILE);
     @Override
     public void onInitialize() {
+        BreadSkinConfigs.init();
+        BreadSkinConfigs.getInstance().load();
+        ModsScreen.getInstance().addConfig(BreadSkinConfigs.getInstance());
     }
 
-    @Override
-    public Optional<ConfigRegistry> createConfig() {
-        return Optional.of(CONFIG_REGISTRY);
-    }
+//    @Override
+//    public Optional<ConfigRegistry> createConfig() {
+//        return Optional.of(this.configRegistry);
+//    }
 }
