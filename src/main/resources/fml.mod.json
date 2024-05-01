@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "bread_skin",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "depends": {
     "fishmodloader": ">=3.2.2",
     "many-lib": ">=1.0.0"
@@ -15,7 +15,7 @@
   ],
   "entrypoints": {
     "main": [
-      "net.xylose.mitemod.breadskin.BreadSkin"
+      "cn.xylose.mitemod.breadskin.BreadSkin"
     ]
   },
   "mixins": [

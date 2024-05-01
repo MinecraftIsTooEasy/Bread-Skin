@@ -1,4 +1,4 @@
-package net.xylose.mitemod.breadskin.util;
+package cn.xylose.mitemod.breadskin.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,15 +15,9 @@ import java.util.List;
 
 
 public class BreadSkinConfigs extends SimpleConfigs {
-//    public static final File CONFIG_FILE = new File("bread-skin-cfg.json");
-//    public static final FieldReference<Boolean> Display_Saturation = new FieldReference(true);
-//    public static final FieldReference<Integer> Hud_Y = new FieldReference(0);
-//    public static final ConfigRoot ROOT = ConfigRoot.create(BreadSkin.CONFIG_VERSION)
-//            .addEntry(ConfigEntry.of("display_saturation", Display_Saturation).withComment("是否显示饱和度"))
-//            .addEntry(ConfigEntry.of("hud_y", Hud_Y).withComment("饱和度的显示高度,每10单位为一行,增加数值为上升"));
-
-    public static final ConfigBoolean Display_Saturation = new ConfigBoolean("是否显示饱和度", true, "是否显示饱和度");
-    public static final ConfigInteger Saturation_Hud_Y = new ConfigInteger("饱和度的显示高度", 0, -30, 200, "每10单位为一行,增加数值为上升");
+    public static final ConfigBoolean Display_Saturation = new ConfigBoolean("显示饱和度", true, "饱和度显示总开关");
+    public static final ConfigInteger Saturation_Hud_Y = new ConfigInteger("饱和度的显示高度", 0, -30, 200, "每10单位为一行,增加数值为上升(类苹果皮模式无效)");
+    public static final ConfigBoolean Apple_Skin_Mode = new ConfigBoolean("类苹果皮模式", false, "在饱食度描边显示饱和度");
 
     private static BreadSkinConfigs Instance;
     public static List<ConfigBase> BreadSkin;
@@ -33,7 +27,7 @@ public class BreadSkinConfigs extends SimpleConfigs {
     }
 
     public static void init() {
-        BreadSkin = List.of(Display_Saturation, Saturation_Hud_Y);
+        BreadSkin = List.of(Display_Saturation, Saturation_Hud_Y, Apple_Skin_Mode);
         ArrayList<ConfigBase> values = new ArrayList<ConfigBase>();
         values.addAll(BreadSkin);
         Instance = new BreadSkinConfigs("BreadSkin", null, values);
