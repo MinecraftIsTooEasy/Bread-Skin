@@ -13,7 +13,7 @@ public class BreadSkinConfigs extends SimpleConfigs {
     public static final ConfigBoolean Apple_Skin_Mode = new ConfigBoolean("类苹果皮模式", false, "在饱食度描边显示饱和度");
     public static final ConfigBoolean DrawNutritionBar = new ConfigBoolean("绘画营养条", true);
     public static final ConfigEnum<EnumNutritionBarMode> NutritionBarMode = new ConfigEnum<>("营养条模式", EnumNutritionBarMode.Mixed);
-    public static final ConfigBoolean ExactNutrition = new ConfigBoolean("具体营养值");
+    public static final ConfigBoolean ExactNutrition = new ConfigBoolean("营养值明细");
     public static final ConfigBoolean SecondaryDecrement = new ConfigBoolean("二次递减", true, "ITF同款, 在营养接近满时更容易察觉变化");
     public static final ConfigInteger LeftBarOffset = new ConfigInteger("左营养条位置偏移", 0, -512, 512);
     public static final ConfigInteger RightBarOffset = new ConfigInteger("右营养条位置偏移", 0, -512, 512);
