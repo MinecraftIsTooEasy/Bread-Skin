@@ -4,9 +4,9 @@
   "version": "1.4.0",
   "depends": {
     "fishmodloader": ">=3.2.2",
-    "many-lib": ">=1.0.0"
+    "many-lib": ">=2.0.0"
   },
-  "environment": "client",
+  "environment": "*",
   "name": "Bread Skin",
   "description": "",
   "authors": [
@@ -20,5 +20,12 @@
   },
   "mixins": [
     "BreadSkin.mixins.json"
-  ]
+  ],
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/EntityClientPlayerMP": [
+        "cn/xylose/mitemod/breadskin/api/BreadSkinClientPlayer"
+      ]
+    }
+  }
 }

@@ -5,7 +5,10 @@
   "target": "DEFAULT",
   "minVersion": "0.8.3",
   "mixins": [
-    "gui.GuiIngameMixin"
+    "entity.EntityClientPlayerMPMixin",
+    "entity.ServerPlayerMixin",
+    "gui.GuiIngameMixin",
+    "network.NetClientHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
