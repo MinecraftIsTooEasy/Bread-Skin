@@ -25,7 +25,13 @@ public abstract class GuiIngameMixin extends Gui {
     @Final
     private Random rand;
 
-    @Inject(method = "func_110327_a", at = @At(value = "INVOKE", target = "Lnet/minecraft/EntityClientPlayerMP;getHealth()F"))
+    @Inject(
+            method = "func_110327_a",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/EntityClientPlayerMP;getHealth()F"
+            )
+    )
     private void injectFullnessBreadSkin(int par1, int par2, CallbackInfo ci) {
         RenderHud.drawBread(this.mc.ingameGUI, this.mc, this.rand, par1, par2);
     }
@@ -44,7 +50,16 @@ public abstract class GuiIngameMixin extends Gui {
         ci.cancel();
     }
 
-    @Inject(locals = LocalCapture.CAPTURE_FAILHARD, method = "func_110327_a(II)V", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/Profiler;startSection(Ljava/lang/String;)V", args = "ldc=armor", shift = At.Shift.BEFORE))
+    @Inject(
+            locals = LocalCapture.CAPTURE_FAILHARD,
+            method = "func_110327_a(II)V",
+            at = @At(
+                    value = "INVOKE_STRING",
+                    target = "Lnet/minecraft/Profiler;startSection(Ljava/lang/String;)V",
+                    args = "ldc=armor",
+                    shift = At.Shift.BEFORE
+            )
+    )
     private void nutritionBar(int par1, int par2, CallbackInfo ci, boolean var3, int var4, int var5, FoodStats var7, int var8, AttributeInstance var10, int var11, int var12, int var13, float var14, float var15) {
         if (BreadSkinConfigs.DrawNutritionBar.getBooleanValue()) {
             switch (BreadSkinConfigs.NutritionBarMode.getEnumValue()) {

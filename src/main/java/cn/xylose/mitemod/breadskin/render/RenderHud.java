@@ -84,7 +84,11 @@ public class RenderHud {
         int food = foodStats.getNutrition();
         int var16 = MathHelper.ceiling_float_int((var14 + var15) / 2.0F / 10.0F);
         int var17 = Math.max(10 - (var16 - 2), 3);
-        int displayY = var13 - (var16 - 1) * var17 - 20 - BreadSkinConfigs.Saturation_Hud_Y.getIntegerValue();
+        int displayY;
+        if (!BreadSkinConfigs.Apple_Skin_Mode.getBooleanValue())
+            displayY = var13 - (var16 - 1) * var17 - 20 - BreadSkinConfigs.Saturation_Hud_Y.getIntegerValue();
+        else
+            displayY = var13 - (var16 - 1) * var17 - 10;
         int var23;
         int var25;
         int var26;
@@ -134,17 +138,37 @@ public class RenderHud {
 
     public static void drawNutrientsBarSeparate(Gui gui, Minecraft mc, int var12, int var13) {
         BreadSkinClientPlayer thePlayer = (BreadSkinClientPlayer) mc.thePlayer;
+        ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+        FontRenderer fontRenderer = mc.fontRenderer;
         int protein = thePlayer.breadSkin$GetProtein();
         int phytonutrients = thePlayer.breadSkin$GetPhytonutrients();
         int var25 = var13 + 32;
         int var26 = var12 + 240 + BreadSkinConfigs.RightBarOffset.getIntegerValue();
-        if (BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
-            gui.drawString(mc.fontRenderer, phytonutrients + "/" + 160000, var26 - 167, var25 - 8, 16777215);
+        String phytonutrientsString = phytonutrients + "/" + 160000;
+        if (BreadSkinConfigs.Percentage.getBooleanValue() && BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
+            phytonutrientsString = phytonutrients + "/" + 160000 + " (" + (int) (phytonutrients / 1600.0F) + "%)";
+            gui.drawString(mc.fontRenderer, phytonutrientsString, sr.getScaledWidth() - fontRenderer.getStringWidth(phytonutrientsString) - 40 + (int) (BreadSkinConfigs.RightBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
+        }
+        else if (BreadSkinConfigs.Percentage.getBooleanValue() && !(BreadSkinConfigs.ExactNutrition.getBooleanValue())) {
+            phytonutrientsString = (int) (phytonutrients / 1600.0F) + "%";
+            gui.drawString(mc.fontRenderer, phytonutrientsString, sr.getScaledWidth() - fontRenderer.getStringWidth(phytonutrientsString) - 40 + (int) (BreadSkinConfigs.RightBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
+        }
+        else if (BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
+            gui.drawString(mc.fontRenderer, phytonutrientsString, sr.getScaledWidth() - fontRenderer.getStringWidth(phytonutrientsString) - 40 + (int) (BreadSkinConfigs.RightBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
         }
         drawPhytonutrients(gui, mc, var26, var25, phytonutrients, true);
         var26 = var12 - 303 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
-        if (BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
-            gui.drawString(mc.fontRenderer, protein + "/" + 160000, var26, var25 - 8, 16777215);
+        String proteinString = protein + "/" + 160000;
+        if (BreadSkinConfigs.Percentage.getBooleanValue() && BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
+            proteinString = protein + "/" + 160000 + " (" + (int) (protein / 1600.0F) + "%)";
+            gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
+        }
+        else if (BreadSkinConfigs.Percentage.getBooleanValue() && !(BreadSkinConfigs.ExactNutrition.getBooleanValue())) {
+            proteinString = (int) (protein / 1600.0F) + "%";
+            gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
+        }
+        else if (BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
+            gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
         }
         drawProtein(gui, mc, var26, var25, protein, true);
     }

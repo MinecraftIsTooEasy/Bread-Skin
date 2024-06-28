@@ -14,9 +14,10 @@ public class BreadSkinConfigs extends SimpleConfigs {
     public static final ConfigBoolean DrawNutritionBar = new ConfigBoolean("绘画营养条", true);
     public static final ConfigEnum<EnumNutritionBarMode> NutritionBarMode = new ConfigEnum<>("营养条模式", EnumNutritionBarMode.Mixed);
     public static final ConfigBoolean ExactNutrition = new ConfigBoolean("营养值明细");
+    public static final ConfigBoolean Percentage = new ConfigBoolean("营养值百分比明细");
     public static final ConfigBoolean SecondaryDecrement = new ConfigBoolean("二次递减", true, "ITF同款, 在营养接近满时更容易察觉变化");
-    public static final ConfigInteger LeftBarOffset = new ConfigInteger("左营养条位置偏移", 0, -512, 512);
-    public static final ConfigInteger RightBarOffset = new ConfigInteger("右营养条位置偏移", 0, -512, 512);
+    public static final ConfigInteger LeftBarOffset = new ConfigInteger("蛋白质营养条横向位置偏移", 0, -768, 768);
+    public static final ConfigInteger RightBarOffset = new ConfigInteger("植物营养素营养条横向位置偏移", 0, -768, 768);
     private static final BreadSkinConfigs Instance;
     public static final List<ConfigBase<?>> BreadSkin;
     public static final List<ConfigBase<?>> NutritionBar;
@@ -29,12 +30,12 @@ public class BreadSkinConfigs extends SimpleConfigs {
 
     static {
         BreadSkin = List.of(Display_Saturation, Saturation_Hud_Y, Apple_Skin_Mode);
-        NutritionBar = List.of(DrawNutritionBar, NutritionBarMode, ExactNutrition, SecondaryDecrement, LeftBarOffset, RightBarOffset);
+        NutritionBar = List.of(DrawNutritionBar, NutritionBarMode, ExactNutrition, Percentage, SecondaryDecrement, LeftBarOffset, RightBarOffset);
 
         Total.addAll(BreadSkin);
         Total.addAll(NutritionBar);
 
-        tabs.add(new ConfigTab("面包皮", BreadSkin));
+        tabs.add(new ConfigTab("饱和度", BreadSkin));
         tabs.add(new ConfigTab("营养条", NutritionBar));
 
         Instance = new BreadSkinConfigs("BreadSkin", null, Total);
