@@ -6,6 +6,9 @@
     "fishmodloader": ">=3.2.2",
     "many-lib": ">=2.0.0"
   },
+  "breaks": {
+    "mite-itf-reborn": "<=17.2.6"
+  },
   "environment": "*",
   "name": "Bread Skin",
   "description": "",

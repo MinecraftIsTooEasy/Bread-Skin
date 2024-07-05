@@ -1,7 +1,9 @@
 package cn.xylose.mitemod.breadskin.render;
 
+import cn.xylose.mitemod.breadskin.BreadSkin;
 import cn.xylose.mitemod.breadskin.api.BreadSkinClientPlayer;
 import cn.xylose.mitemod.breadskin.config.BreadSkinConfigs;
+import cn.xylose.mitemod.breadskin.config.EnumNutritionInfoMode;
 import net.minecraft.*;
 import org.lwjgl.opengl.GL11;
 
@@ -144,32 +146,15 @@ public class RenderHud {
         int phytonutrients = thePlayer.breadSkin$GetPhytonutrients();
         int var25 = var13 + 32;
         int var26 = var12 + 240 + BreadSkinConfigs.RightBarOffset.getIntegerValue();
-        String phytonutrientsString = phytonutrients + "/" + 160000;
-        if (BreadSkinConfigs.Percentage.getBooleanValue() && BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
-            phytonutrientsString = phytonutrients + "/" + 160000 + " (" + (int) (phytonutrients / 1600.0F) + "%)";
+        EnumNutritionInfoMode infoMode = BreadSkinConfigs.NutritionInfoMode.getEnumValue();
+        if (infoMode != EnumNutritionInfoMode.Empty) {
+            String phytonutrientsString = infoMode.formatter.apply(phytonutrients);
             gui.drawString(mc.fontRenderer, phytonutrientsString, sr.getScaledWidth() - fontRenderer.getStringWidth(phytonutrientsString) - 40 + (int) (BreadSkinConfigs.RightBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
-        }
-        else if (BreadSkinConfigs.Percentage.getBooleanValue() && !(BreadSkinConfigs.ExactNutrition.getBooleanValue())) {
-            phytonutrientsString = (int) (phytonutrients / 1600.0F) + "%";
-            gui.drawString(mc.fontRenderer, phytonutrientsString, sr.getScaledWidth() - fontRenderer.getStringWidth(phytonutrientsString) - 40 + (int) (BreadSkinConfigs.RightBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
-        }
-        else if (BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
-            gui.drawString(mc.fontRenderer, phytonutrientsString, sr.getScaledWidth() - fontRenderer.getStringWidth(phytonutrientsString) - 40 + (int) (BreadSkinConfigs.RightBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
+            String proteinString = infoMode.formatter.apply(protein);
+            gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
         }
         drawPhytonutrients(gui, mc, var26, var25, phytonutrients, true);
         var26 = var12 - 303 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
-        String proteinString = protein + "/" + 160000;
-        if (BreadSkinConfigs.Percentage.getBooleanValue() && BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
-            proteinString = protein + "/" + 160000 + " (" + (int) (protein / 1600.0F) + "%)";
-            gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
-        }
-        else if (BreadSkinConfigs.Percentage.getBooleanValue() && !(BreadSkinConfigs.ExactNutrition.getBooleanValue())) {
-            proteinString = (int) (protein / 1600.0F) + "%";
-            gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
-        }
-        else if (BreadSkinConfigs.ExactNutrition.getBooleanValue()) {
-            gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
-        }
         drawProtein(gui, mc, var26, var25, protein, true);
     }
 
@@ -213,10 +198,8 @@ public class RenderHud {
     private static float getRateNutrient(long par1) {
         if (BreadSkinConfigs.SecondaryDecrement.getBooleanValue()) {
             par1 *= par1;
-            par1 /= 160000L;
-            return (float) par1 / 160000.0F;
-        } else {
-            return (float) par1 / 160000.0F;
+            par1 /= BreadSkin.nutritionLimit;
         }
+        return (float) par1 / BreadSkin.nutritionLimit;
     }
 }

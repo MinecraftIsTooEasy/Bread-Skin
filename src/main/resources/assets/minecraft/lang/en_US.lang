@@ -1,0 +1,9 @@
+config.name.breadSkin.nutritionBarMode=营养条模式
+config.enum.breadSkin.nutritionBarMode.Separate=分离模式
+config.enum.breadSkin.nutritionBarMode.Mixed=混合模式
+
+config.name.breadSkin.nutritionInfoMode=营养条明细
+config.enum.breadSkin.nutritionInfoMode.Empty=不显示
+config.enum.breadSkin.nutritionInfoMode.Exact=精确值
+config.enum.breadSkin.nutritionInfoMode.Percentage=百分比
+config.enum.breadSkin.nutritionInfoMode.Mixed=混合模式
