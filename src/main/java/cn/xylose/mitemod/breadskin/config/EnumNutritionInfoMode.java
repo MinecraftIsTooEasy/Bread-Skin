@@ -1,21 +1,21 @@
 package cn.xylose.mitemod.breadskin.config;
 
-import cn.xylose.mitemod.breadskin.BreadSkin;
-
-import java.util.function.Function;
-
 public enum EnumNutritionInfoMode {
-    Empty(integer -> {
+    Empty((nutrition, limit) -> {
         throw new IllegalCallerException();
     }),
-    Exact(integer -> integer + "/" + BreadSkin.nutritionLimit),
-    Percentage(integer -> (integer * 100 / BreadSkin.nutritionLimit) + "%"),
-    Mixed(integer -> integer + "/" + BreadSkin.nutritionLimit + " (" + (int) (integer * 100 / BreadSkin.nutritionLimit) + "%)"),
+    Exact((nutrition, limit) -> nutrition + "/" + limit),
+    Percentage((nutrition, limit) -> (nutrition * 100 / limit) + "%"),
+    Mixed((nutrition, limit) -> nutrition + "/" + limit + " (" + (nutrition * 100 / limit) + "%)"),
     ;
 
-    public final Function<Integer, String> formatter;
+    public final NutritionInfoFormatter formatter;
 
-    EnumNutritionInfoMode(Function<Integer, String> formatter) {
+    EnumNutritionInfoMode(NutritionInfoFormatter formatter) {
         this.formatter = formatter;
+    }
+
+    public interface NutritionInfoFormatter {
+        String format(int nutrition, int limit);
     }
 }

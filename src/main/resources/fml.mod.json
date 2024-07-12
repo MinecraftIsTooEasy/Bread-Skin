@@ -24,6 +24,7 @@
   "mixins": [
     "BreadSkin.mixins.json"
   ],
+  "accessWidener": "BreadSkin.accesswidener",
   "custom": {
     "loom:injected_interfaces": {
       "net/minecraft/EntityClientPlayerMP": [

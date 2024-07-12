@@ -1,11 +1,9 @@
 package cn.xylose.mitemod.breadskin.mixin.gui;
 
-import java.util.Random;
-
-import cn.xylose.mitemod.breadskin.render.RenderHud;
+import cn.xylose.mitemod.breadskin.api.BreadSkinClientPlayer;
 import cn.xylose.mitemod.breadskin.config.BreadSkinConfigs;
+import cn.xylose.mitemod.breadskin.render.RenderHud;
 import net.minecraft.*;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -13,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import java.util.Random;
 
 @Mixin({GuiIngame.class})
 public abstract class GuiIngameMixin extends Gui {
@@ -62,9 +62,16 @@ public abstract class GuiIngameMixin extends Gui {
     )
     private void nutritionBar(int par1, int par2, CallbackInfo ci, boolean var3, int var4, int var5, FoodStats var7, int var8, AttributeInstance var10, int var11, int var12, int var13, float var14, float var15) {
         if (BreadSkinConfigs.DrawNutritionBar.getBooleanValue()) {
+            BreadSkinClientPlayer thePlayer = (BreadSkinClientPlayer) this.mc.thePlayer;
+            int protein = thePlayer.breadSkin$GetProtein();
+            int phytonutrients = thePlayer.breadSkin$GetPhytonutrients();
+            if (protein == 0 || phytonutrients == 0) {
+                return;
+            }
             switch (BreadSkinConfigs.NutritionBarMode.getEnumValue()) {
-                case Mixed -> RenderHud.drawNutrientsBarMixed(this, this.mc, var12, var13);
-                case Separate -> RenderHud.drawNutrientsBarSeparate(this, this.mc, var12, var13);
+                case Mixed -> RenderHud.drawNutrientsBarMixed(this, this.mc, var12, var13, protein, phytonutrients);
+                case Separate ->
+                        RenderHud.drawNutrientsBarSeparateBeta(this, this.mc, var12, var13, protein, phytonutrients);
             }
         }
     }

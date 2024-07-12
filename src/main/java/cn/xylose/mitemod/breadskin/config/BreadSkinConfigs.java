@@ -17,6 +17,8 @@ public class BreadSkinConfigs extends SimpleConfigs {
     public static final ConfigBoolean SecondaryDecrement = new ConfigBoolean("二次递减", true, "ITF同款, 在营养接近满时更容易察觉变化");
     public static final ConfigInteger LeftBarOffset = new ConfigInteger("蛋白质营养条横向位置偏移", 0, -768, 768);
     public static final ConfigInteger RightBarOffset = new ConfigInteger("植物营养素营养条横向位置偏移", 0, -768, 768);
+    public static final ConfigInteger BarYOffset = new ConfigInteger("营养条纵向位置偏移", 0, -768, 768);
+    public static final ConfigInteger NutritionLimit = new ConfigInteger("营养值上限", 160000, 0, Integer.MAX_VALUE, false, null);
     private static final BreadSkinConfigs Instance;
     public static final List<ConfigBase<?>> BreadSkin;
     public static final List<ConfigBase<?>> NutritionBar;
@@ -29,7 +31,7 @@ public class BreadSkinConfigs extends SimpleConfigs {
 
     static {
         BreadSkin = List.of(Display_Saturation, Saturation_Hud_Y, Apple_Skin_Mode);
-        NutritionBar = List.of(DrawNutritionBar, NutritionBarMode, NutritionInfoMode, SecondaryDecrement, LeftBarOffset, RightBarOffset);
+        NutritionBar = List.of(DrawNutritionBar, NutritionBarMode, NutritionInfoMode, SecondaryDecrement, LeftBarOffset, RightBarOffset, BarYOffset, NutritionLimit);
 
         Total.addAll(BreadSkin);
         Total.addAll(NutritionBar);

@@ -1,7 +1,9 @@
 package cn.xylose.mitemod.breadskin.network;
 
-import cn.xylose.mitemod.breadskin.api.BreadSkinNetHandler;
+import cn.xylose.mitemod.breadskin.api.BreadSkinClientPlayer;
+import net.minecraft.NetClientHandler;
 import net.minecraft.NetHandler;
+import net.minecraft.NetServerHandler;
 import net.minecraft.Packet;
 
 import java.io.DataInput;
@@ -20,14 +22,6 @@ public class S2CUpdateNutrition extends Packet {
         this.protein = protein;
     }
 
-    public int getProtein() {
-        return protein;
-    }
-
-    public int getPhytonutrients() {
-        return phytonutrients;
-    }
-
     @Override
     public void readPacketData(DataInput dataInput) throws IOException {
         this.protein = dataInput.readInt();
@@ -42,7 +36,14 @@ public class S2CUpdateNutrition extends Packet {
 
     @Override
     public void processPacket(NetHandler netHandler) {
-        ((BreadSkinNetHandler) netHandler).breadSkin$HandleUpdateNutrition(this);
+        if (netHandler instanceof NetServerHandler) {
+            throw new IllegalCallerException();
+        }
+        if (netHandler instanceof NetClientHandler netClientHandler) {
+            BreadSkinClientPlayer clientPlayer = netClientHandler.mc.thePlayer;
+            clientPlayer.breadSkin$SetPhytonutrients(this.phytonutrients);
+            clientPlayer.breadSkin$SetProtein(this.protein);
+        }
     }
 
     @Override

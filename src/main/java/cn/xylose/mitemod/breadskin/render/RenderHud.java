@@ -1,7 +1,6 @@
 package cn.xylose.mitemod.breadskin.render;
 
 import cn.xylose.mitemod.breadskin.BreadSkin;
-import cn.xylose.mitemod.breadskin.api.BreadSkinClientPlayer;
 import cn.xylose.mitemod.breadskin.config.BreadSkinConfigs;
 import cn.xylose.mitemod.breadskin.config.EnumNutritionInfoMode;
 import net.minecraft.*;
@@ -10,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Random;
 
 public class RenderHud {
-    private static final ResourceLocation icons_breadskin = new ResourceLocation("textures/gui/icons_breadskin.png");
+    private static final ResourceLocation icons_breadSkin = new ResourceLocation("textures/gui/icons_breadskin.png");
 
     public static void drawBread(GuiIngame guiIngame, Minecraft mc, Random rand, int par1, int par2) {
         AttributeInstance var10 = mc.thePlayer.getEntityAttribute(SharedMonsterAttributes.maxHealth);
@@ -23,7 +22,7 @@ public class RenderHud {
         int displayY = var13 - (var16 - 1) * var17 - 10 - BreadSkinConfigs.Saturation_Hud_Y.getIntegerValue();
         int displayYAppleSkin = var13 - (var16 - 1) * var17;
         FoodStats foodStats = mc.thePlayer.getFoodStats();
-        mc.getTextureManager().bindTexture(icons_breadskin);
+        mc.getTextureManager().bindTexture(icons_breadSkin);
         Entity ridingEntity = mc.thePlayer.ridingEntity;
         if (BreadSkinConfigs.Apple_Skin_Mode.getBooleanValue()) {
             if (!(ridingEntity != null && !(ridingEntity instanceof EntityBoat))) {
@@ -138,19 +137,16 @@ public class RenderHud {
         }
     }
 
-    public static void drawNutrientsBarSeparate(Gui gui, Minecraft mc, int var12, int var13) {
-        BreadSkinClientPlayer thePlayer = (BreadSkinClientPlayer) mc.thePlayer;
+    public static void drawNutrientsBarSeparate(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients) {
         ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
         FontRenderer fontRenderer = mc.fontRenderer;
-        int protein = thePlayer.breadSkin$GetProtein();
-        int phytonutrients = thePlayer.breadSkin$GetPhytonutrients();
         int var25 = var13 + 32;
         int var26 = var12 + 240 + BreadSkinConfigs.RightBarOffset.getIntegerValue();
         EnumNutritionInfoMode infoMode = BreadSkinConfigs.NutritionInfoMode.getEnumValue();
         if (infoMode != EnumNutritionInfoMode.Empty) {
-            String phytonutrientsString = infoMode.formatter.apply(phytonutrients);
+            String phytonutrientsString = infoMode.formatter.format(phytonutrients, BreadSkinConfigs.NutritionLimit.getIntegerValue());
             gui.drawString(mc.fontRenderer, phytonutrientsString, sr.getScaledWidth() - fontRenderer.getStringWidth(phytonutrientsString) - 40 + (int) (BreadSkinConfigs.RightBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
-            String proteinString = infoMode.formatter.apply(protein);
+            String proteinString = infoMode.formatter.format(protein, BreadSkinConfigs.NutritionLimit.getIntegerValue());
             gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
         }
         drawPhytonutrients(gui, mc, var26, var25, phytonutrients, true);
@@ -158,12 +154,31 @@ public class RenderHud {
         drawProtein(gui, mc, var26, var25, protein, true);
     }
 
-    public static void drawNutrientsBarMixed(Gui gui, Minecraft mc, int var12, int var13) {
-        BreadSkinClientPlayer thePlayer = (BreadSkinClientPlayer) mc.thePlayer;
-        int protein = thePlayer.breadSkin$GetProtein();
-        int phytonutrients = thePlayer.breadSkin$GetPhytonutrients();
-        int var25 = var13 + 32;
-        int var26 = var12 - 303 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
+    // protein left, phyto right
+    public static void drawNutrientsBarSeparateBeta(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients) {
+        ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+        int scaledWidth = sr.getScaledWidth();
+        FontRenderer fontRenderer = mc.fontRenderer;
+        int yLevel = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
+        int xStartRight = scaledWidth / 2 + 100 + BreadSkinConfigs.RightBarOffset.getIntegerValue();
+        int xStartLeft = scaledWidth / 2 - 100 - 109 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
+        EnumNutritionInfoMode infoMode = BreadSkinConfigs.NutritionInfoMode.getEnumValue();
+        if (infoMode != EnumNutritionInfoMode.Empty) {
+            int limit = BreadSkinConfigs.NutritionLimit.getIntegerValue();
+            String phytonutrientsString = infoMode.formatter.format(phytonutrients, limit);
+            gui.drawString(fontRenderer, phytonutrientsString, xStartRight, yLevel - 8, 16777215);
+            String proteinString = infoMode.formatter.format(protein, limit);
+            gui.drawString(fontRenderer, proteinString, xStartLeft + 109 - fontRenderer.getStringWidth(proteinString), yLevel - 8, 16777215);
+        }
+        drawPhytonutrients(gui, mc, xStartRight, yLevel, phytonutrients, true);
+        drawProtein(gui, mc, xStartLeft, yLevel, protein, true);
+    }
+
+    public static void drawNutrientsBarMixed(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients) {
+        ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+        int scaledWidth = sr.getScaledWidth();
+        int var25 = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
+        int var26 = scaledWidth / 2 - 209 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
         if (protein > phytonutrients) {
             drawProtein(gui, mc, var26, var25, protein, true);
             drawPhytonutrients(gui, mc, var26, var25, phytonutrients, false);
@@ -176,7 +191,8 @@ public class RenderHud {
     private static void drawPhytonutrients(Gui gui, Minecraft mc, int x, int y, int phytonutrients, boolean drawBackgound) {
         GL11.glPushMatrix();
         GL11.glScalef(0.6F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(icons_breadskin);
+        GL11.glTranslatef(x / 1.5F, 0, 0);
+        mc.getTextureManager().bindTexture(icons_breadSkin);
         if (drawBackgound) {
             gui.drawTexturedModalRect(x, y, 0, 106, 182, 6);
         }
@@ -184,11 +200,12 @@ public class RenderHud {
         GL11.glPopMatrix();
     }
 
-    private static void drawProtein(Gui gui, Minecraft mc, int x, int y, int protein, boolean drawBackgound) {
+    private static void drawProtein(Gui gui, Minecraft mc, int x, int y, int protein, boolean drawBackground) {
         GL11.glPushMatrix();
         GL11.glScalef(0.6F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(icons_breadskin);
-        if (drawBackgound) {
+        GL11.glTranslatef(x / 1.5F, 0, 0);
+        mc.getTextureManager().bindTexture(icons_breadSkin);
+        if (drawBackground) {
             gui.drawTexturedModalRect(x, y, 0, 106, 182, 6);
         }
         gui.drawTexturedModalRect(x, y, 0, 100, (int) (182.0F * getRateNutrient(protein)), 6);
@@ -198,8 +215,8 @@ public class RenderHud {
     private static float getRateNutrient(long par1) {
         if (BreadSkinConfigs.SecondaryDecrement.getBooleanValue()) {
             par1 *= par1;
-            par1 /= BreadSkin.nutritionLimit;
+            par1 /= BreadSkinConfigs.NutritionLimit.getIntegerValue();
         }
-        return (float) par1 / BreadSkin.nutritionLimit;
+        return (float) par1 / BreadSkinConfigs.NutritionLimit.getIntegerValue();
     }
 }

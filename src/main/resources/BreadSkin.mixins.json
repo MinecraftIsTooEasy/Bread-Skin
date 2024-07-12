@@ -7,8 +7,7 @@
   "mixins": [
     "entity.EntityClientPlayerMPMixin",
     "entity.ServerPlayerMixin",
-    "gui.GuiIngameMixin",
-    "network.NetClientHandlerMixin"
+    "gui.GuiIngameMixin"
   ],
   "injectors": {
     "defaultRequire": 1
