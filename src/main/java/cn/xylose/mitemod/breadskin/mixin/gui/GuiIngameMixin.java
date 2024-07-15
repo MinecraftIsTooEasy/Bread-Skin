@@ -71,7 +71,7 @@ public abstract class GuiIngameMixin extends Gui {
             switch (BreadSkinConfigs.NutritionBarMode.getEnumValue()) {
                 case Mixed -> RenderHud.drawNutrientsBarMixed(this, this.mc, var12, var13, protein, phytonutrients);
                 case Separate ->
-                        RenderHud.drawNutrientsBarSeparateBeta(this, this.mc, var12, var13, protein, phytonutrients);
+                        RenderHud.drawNutrientsBarSeparate(this, this.mc, var12, var13, protein, phytonutrients);
             }
         }
     }
