@@ -13,25 +13,29 @@ import java.io.IOException;
 public class S2CUpdateNutrition extends Packet {
     private int protein;
     private int phytonutrients;
+    private int essential_fats;
 
     public S2CUpdateNutrition() {
     }
 
-    public S2CUpdateNutrition(int phytonutrients, int protein) {
+    public S2CUpdateNutrition(int phytonutrients, int protein, int essential_fats) {
         this.phytonutrients = phytonutrients;
         this.protein = protein;
+        this.essential_fats = essential_fats;
     }
 
     @Override
     public void readPacketData(DataInput dataInput) throws IOException {
         this.protein = dataInput.readInt();
         this.phytonutrients = dataInput.readInt();
+        this.essential_fats = dataInput.readInt();
     }
 
     @Override
     public void writePacketData(DataOutput dataOutput) throws IOException {
         dataOutput.writeInt(this.protein);
         dataOutput.writeInt(this.phytonutrients);
+        dataOutput.writeInt(this.essential_fats);
     }
 
     @Override
@@ -43,6 +47,7 @@ public class S2CUpdateNutrition extends Packet {
             BreadSkinClientPlayer clientPlayer = netClientHandler.mc.thePlayer;
             clientPlayer.breadSkin$SetPhytonutrients(this.phytonutrients);
             clientPlayer.breadSkin$SetProtein(this.protein);
+            clientPlayer.breadSkin$SetEssentialFats(this.essential_fats);
         }
     }
 

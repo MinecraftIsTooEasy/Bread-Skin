@@ -12,24 +12,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin {
-    @Shadow
-    private int phytonutrients;
-    @Shadow
-    private int protein;
-    @Shadow
-    public NetServerHandler playerNetServerHandler;
-    @Unique
-    private int last_phytonutrients;
-    @Unique
-    private int last_protein;
+    @Shadow private int phytonutrients;
+    @Shadow private int protein;
+    @Shadow private int essential_fats;
+    @Shadow public NetServerHandler playerNetServerHandler;
+    @Unique private int last_phytonutrients;
+    @Unique private int last_protein;
+    @Unique private int last_essential_fats;
 
 
     @Inject(method = "onUpdateEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/FoodStats;getHunger()F"))
     private void updateNutrition(CallbackInfo ci) {
-        if (this.phytonutrients != this.last_phytonutrients || this.protein != this.last_protein) {
-            this.playerNetServerHandler.sendPacketToPlayer(new S2CUpdateNutrition(phytonutrients, protein));
+        if (this.phytonutrients != this.last_phytonutrients || this.protein != this.last_protein || this.essential_fats != this.last_essential_fats) {
+            this.playerNetServerHandler.sendPacketToPlayer(new S2CUpdateNutrition(phytonutrients, protein, essential_fats));
             this.last_phytonutrients = this.phytonutrients;
             this.last_protein = this.protein;
+            this.last_essential_fats = this.essential_fats;
         }
     }
 }

@@ -16,4 +16,12 @@ public interface BreadSkinClientPlayer {
     default void breadSkin$SetProtein(int protein) {
         throw new IllegalStateException("Should be implemented in Mixin");
     }
+
+    default int breadSkin$GetEssentialFats() {
+        throw new IllegalStateException("Should be implemented in Mixin");
+    }
+
+    default void breadSkin$SetEssentialFats(int essential_fats) {
+        throw new IllegalStateException("Should be implemented in Mixin");
+    }
 }

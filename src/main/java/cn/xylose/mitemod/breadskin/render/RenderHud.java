@@ -137,7 +137,7 @@ public class RenderHud {
         }
     }
 
-    public static void drawNutrientsBarSeparate(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients) {
+    public static void drawNutrientsBarSeparate(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients, int essential_fats) {
         ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
         FontRenderer fontRenderer = mc.fontRenderer;
         int var25 = var13 + 32;
@@ -152,16 +152,19 @@ public class RenderHud {
         drawPhytonutrients(gui, mc, var26, var25, phytonutrients, true);
         var26 = var12 - 303 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
         drawProtein(gui, mc, var26, var25, protein, true);
+        var25 = var13 + 42;
+        drawEssentialFats(gui, mc, var26, var25, essential_fats, true);
     }
 
     // protein left, phyto right
-    public static void drawNutrientsBarSeparateBeta(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients) {
+    public static void drawNutrientsBarSeparateBeta(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients, int essential_fats) {
         ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
         int scaledWidth = sr.getScaledWidth();
         FontRenderer fontRenderer = mc.fontRenderer;
         int yLevel = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
         int xStartRight = scaledWidth / 2 + 100 + BreadSkinConfigs.RightBarOffset.getIntegerValue();
         int xStartLeft = scaledWidth / 2 - 100 - 109 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
+        int xStartUp = scaledWidth / 2 + 100 + BreadSkinConfigs.upBarOffset.getIntegerValue();
         EnumNutritionInfoMode infoMode = BreadSkinConfigs.NutritionInfoMode.getEnumValue();
         if (infoMode != EnumNutritionInfoMode.Empty) {
             int limit = BreadSkinConfigs.NutritionLimit.getIntegerValue();
@@ -169,22 +172,36 @@ public class RenderHud {
             gui.drawString(fontRenderer, phytonutrientsString, xStartRight, yLevel - 8, 16777215);
             String proteinString = infoMode.formatter.format(protein, limit);
             gui.drawString(fontRenderer, proteinString, xStartLeft + 109 - fontRenderer.getStringWidth(proteinString), yLevel - 8, 16777215);
+            String essentialFatsString = infoMode.formatter.format(essential_fats, limit);
+            if (BreadSkinConfigs.DrawEssentialFatsNutritionBar.getBooleanValue())
+               gui.drawString(fontRenderer, essentialFatsString, xStartUp, yLevel - 24, 16777215);
         }
         drawPhytonutrients(gui, mc, xStartRight, yLevel, phytonutrients, true);
         drawProtein(gui, mc, xStartLeft, yLevel, protein, true);
+        drawEssentialFats(gui, mc, xStartUp, yLevel - 16, essential_fats, true);
     }
 
-    public static void drawNutrientsBarMixed(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients) {
+    public static void drawNutrientsBarMixed(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients, int essential_fats) {
         ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
         int scaledWidth = sr.getScaledWidth();
         int var25 = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
         int var26 = scaledWidth / 2 - 209 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
-        if (protein > phytonutrients) {
+        if (protein > phytonutrients && protein > essential_fats && phytonutrients > essential_fats) {
+            drawEssentialFats(gui, mc, var26, var25, essential_fats, false);
             drawProtein(gui, mc, var26, var25, protein, true);
             drawPhytonutrients(gui, mc, var26, var25, phytonutrients, false);
-        } else {
+        } else if (protein < phytonutrients && protein > essential_fats) {
+            drawEssentialFats(gui, mc, var26, var25, essential_fats, false);
             drawPhytonutrients(gui, mc, var26, var25, phytonutrients, true);
             drawProtein(gui, mc, var26, var25, protein, false);
+        } else if (essential_fats > phytonutrients && essential_fats > protein) {
+            drawProtein(gui, mc, var26, var25, protein, true);
+            drawPhytonutrients(gui, mc, var26, var25, phytonutrients, false);
+            drawEssentialFats(gui, mc, var26, var25, essential_fats, false);
+        } else {
+            drawEssentialFats(gui, mc, var26, var25, essential_fats, false);
+            drawProtein(gui, mc, var26, var25, protein, true);
+            drawPhytonutrients(gui, mc, var26, var25, phytonutrients, false);
         }
     }
 
@@ -210,6 +227,22 @@ public class RenderHud {
         }
         gui.drawTexturedModalRect(x, y, 0, 100, (int) (182.0F * getRateNutrient(protein)), 6);
         GL11.glPopMatrix();
+    }
+
+    private static void drawEssentialFats(Gui gui, Minecraft mc, int x, int y, int essential_fats, boolean drawBackground) {
+        if (BreadSkinConfigs.DrawEssentialFatsNutritionBar.getBooleanValue()) {
+            GL11.glPushMatrix();
+            GL11.glScalef(0.6F, 1.0F, 1.0F);
+            GL11.glTranslatef(x / 1.5F, 0, 0);
+            mc.getTextureManager().bindTexture(icons_breadSkin);
+            if (drawBackground) {
+                gui.drawTexturedModalRect(x, y, 0, 106, 182, 6);
+            }
+            gui.drawTexturedModalRect(x, y, 0, 112, (int) (182.0F * getRateNutrient(essential_fats)), 6);
+            GL11.glPopMatrix();
+        } else {
+            gui.drawString(mc.fontRenderer, "", 0, 0, 16777215);
+        }
     }
 
     private static float getRateNutrient(long par1) {

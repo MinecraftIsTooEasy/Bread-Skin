@@ -12,6 +12,8 @@ public abstract class EntityClientPlayerMPMixin extends ClientPlayer implements 
     private int phytonutrients;
     @Unique
     private int protein;
+    @Unique
+    private int essential_fats;
 
     public EntityClientPlayerMPMixin(Minecraft par1Minecraft, World par2World, Session par3Session, NetClientHandler par4NetClientHandler) {
         super(par1Minecraft, par2World, par3Session, 0);
@@ -36,4 +38,15 @@ public abstract class EntityClientPlayerMPMixin extends ClientPlayer implements 
     public void breadSkin$SetProtein(int protein) {
         this.protein = protein;
     }
+
+    @Override
+    public int breadSkin$GetEssentialFats() {
+        return this.essential_fats;
+    }
+
+    @Override
+    public void breadSkin$SetEssentialFats(int essential_fats) {
+        this.essential_fats = essential_fats;
+    }
+
 }

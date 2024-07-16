@@ -65,13 +65,14 @@ public abstract class GuiIngameMixin extends Gui {
             BreadSkinClientPlayer thePlayer = (BreadSkinClientPlayer) this.mc.thePlayer;
             int protein = thePlayer.breadSkin$GetProtein();
             int phytonutrients = thePlayer.breadSkin$GetPhytonutrients();
-            if (protein == 0 || phytonutrients == 0) {
+            int essential_fats =thePlayer.breadSkin$GetEssentialFats();
+            if (protein == 0 || phytonutrients == 0 || essential_fats == 0) {
                 return;
             }
             switch (BreadSkinConfigs.NutritionBarMode.getEnumValue()) {
-                case Mixed -> RenderHud.drawNutrientsBarMixed(this, this.mc, var12, var13, protein, phytonutrients);
+                case Mixed -> RenderHud.drawNutrientsBarMixed(this, this.mc, var12, var13, protein, phytonutrients, essential_fats);
                 case Separate ->
-                        RenderHud.drawNutrientsBarSeparateBeta(this, this.mc, var12, var13, protein, phytonutrients);
+                        RenderHud.drawNutrientsBarSeparateBeta(this, this.mc, var12, var13, protein, phytonutrients, essential_fats);
             }
         }
     }
