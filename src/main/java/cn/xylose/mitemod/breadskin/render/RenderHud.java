@@ -19,7 +19,7 @@ public class RenderHud {
         float var15 = mc.thePlayer.getAbsorptionAmount();
         int var16 = MathHelper.ceiling_float_int((var14 + var15) / 2.0F / 10.0F);
         int var17 = Math.max(10 - (var16 - 2), 3);
-        int displayY = var13 - (var16 - 1) * var17 - 10 - BreadSkinConfigs.Saturation_Hud_Y.getIntegerValue();
+        int displayY = var13 - (var16 - 1) * var17 - 10 - BreadSkinConfigs.Saturation_Hud_Y.getIntegerValue() * 10;
         int displayYAppleSkin = var13 - (var16 - 1) * var17;
         FoodStats foodStats = mc.thePlayer.getFoodStats();
         mc.getTextureManager().bindTexture(icons_breadSkin);
@@ -57,7 +57,7 @@ public class RenderHud {
                             textureBase = 9;
                         }
                         if (mc.thePlayer.isHungry() && guiIngame.getUpdateCounter() % (fullness * 3 + 1) == 0) {
-                            displayY = var13 - 10 + (rand.nextInt(3) - 1) - BreadSkinConfigs.Saturation_Hud_Y.getIntegerValue();
+                            displayY = var13 - 10 + (rand.nextInt(3) - 1) - BreadSkinConfigs.Saturation_Hud_Y.getIntegerValue() * 10;
                         }
                         int displayX = var12 - temp * 8 - 9;
                         if (temp < mc.thePlayer.getFoodStats().getSatiationLimit() / 2) {
@@ -139,32 +139,11 @@ public class RenderHud {
 
     public static void drawNutrientsBarSeparate(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients, int essential_fats) {
         ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-        FontRenderer fontRenderer = mc.fontRenderer;
-        int var25 = var13 + 32;
-        int var26 = var12 + 240 + BreadSkinConfigs.RightBarOffset.getIntegerValue();
-        EnumNutritionInfoMode infoMode = BreadSkinConfigs.NutritionInfoMode.getEnumValue();
-        if (infoMode != EnumNutritionInfoMode.Empty) {
-            String phytonutrientsString = infoMode.formatter.format(phytonutrients, BreadSkinConfigs.NutritionLimit.getIntegerValue());
-            gui.drawString(mc.fontRenderer, phytonutrientsString, sr.getScaledWidth() - fontRenderer.getStringWidth(phytonutrientsString) - 40 + (int) (BreadSkinConfigs.RightBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
-            String proteinString = infoMode.formatter.format(protein, BreadSkinConfigs.NutritionLimit.getIntegerValue());
-            gui.drawString(mc.fontRenderer, proteinString, 30 + (int) (BreadSkinConfigs.LeftBarOffset.getIntegerValue() / 1.65), var25 - 8, 16777215);
-        }
-        drawPhytonutrients(gui, mc, var26, var25, phytonutrients, true);
-        var26 = var12 - 303 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
-        drawProtein(gui, mc, var26, var25, protein, true);
-        var25 = var13 + 42;
-        drawEssentialFats(gui, mc, var26, var25, essential_fats, true);
-    }
-
-    // protein left, phyto right
-    public static void drawNutrientsBarSeparateBeta(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients, int essential_fats) {
-        ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
         int scaledWidth = sr.getScaledWidth();
         FontRenderer fontRenderer = mc.fontRenderer;
         int yLevel = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
-        int xStartRight = scaledWidth / 2 + 100 + BreadSkinConfigs.RightBarOffset.getIntegerValue();
-        int xStartLeft = scaledWidth / 2 - 100 - 109 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
-        int xStartUp = scaledWidth / 2 + 100 + BreadSkinConfigs.upBarOffset.getIntegerValue();
+        int xStartRight = scaledWidth / 2 + 100 + BreadSkinConfigs.BarXOffset.getIntegerValue();
+        int xStartLeft = scaledWidth / 2 - 100 - 109 - BreadSkinConfigs.BarXOffset.getIntegerValue();
         EnumNutritionInfoMode infoMode = BreadSkinConfigs.NutritionInfoMode.getEnumValue();
         if (infoMode != EnumNutritionInfoMode.Empty) {
             int limit = BreadSkinConfigs.NutritionLimit.getIntegerValue();
@@ -174,20 +153,18 @@ public class RenderHud {
             gui.drawString(fontRenderer, proteinString, xStartLeft + 109 - fontRenderer.getStringWidth(proteinString), yLevel - 8, 16777215);
             String essentialFatsString = infoMode.formatter.format(essential_fats, limit);
             if (BreadSkinConfigs.DrawEssentialFatsNutritionBar.getBooleanValue())
-               gui.drawString(fontRenderer, essentialFatsString, xStartUp, yLevel - 24, 16777215);
+                gui.drawString(fontRenderer, essentialFatsString, xStartRight, yLevel - 24, 16777215);
         }
         drawPhytonutrients(gui, mc, xStartRight, yLevel, phytonutrients, true);
         drawProtein(gui, mc, xStartLeft, yLevel, protein, true);
-        drawEssentialFats(gui, mc, xStartUp, yLevel - 16, essential_fats, true);
+        drawEssentialFats(gui, mc, xStartRight, yLevel - 16, essential_fats, true);
     }
-
     public static void drawNutrientsBarMixed(Gui gui, Minecraft mc, int var12, int var13, int protein, int phytonutrients, int essential_fats) {
         ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
         int scaledWidth = sr.getScaledWidth();
         int var25 = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
-        int var26 = scaledWidth / 2 - 209 + BreadSkinConfigs.LeftBarOffset.getIntegerValue();
-        if (protein > phytonutrients && protein > essential_fats && phytonutrients > essential_fats) {
-            drawEssentialFats(gui, mc, var26, var25, essential_fats, false);
+        int var26 = scaledWidth / 2 - 209 + BreadSkinConfigs.BarXOffset.getIntegerValue();
+        if (protein > phytonutrients) {
             drawProtein(gui, mc, var26, var25, protein, true);
             drawPhytonutrients(gui, mc, var26, var25, phytonutrients, false);
         } else if (protein < phytonutrients && protein > essential_fats) {

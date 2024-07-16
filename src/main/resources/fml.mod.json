@@ -9,7 +9,7 @@
   "breaks": {
     "mite-itf-reborn": "<=17.2.6"
   },
-  "environment": "*",
+  "environment": "client",
   "name": "Bread Skin",
   "description": "",
   "authors": [
