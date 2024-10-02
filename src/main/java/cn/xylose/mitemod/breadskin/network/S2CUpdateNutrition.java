@@ -53,6 +53,6 @@ public class S2CUpdateNutrition extends Packet {
 
     @Override
     public int getPacketSize() {
-        return 8;
+        return 12;
     }
 }
