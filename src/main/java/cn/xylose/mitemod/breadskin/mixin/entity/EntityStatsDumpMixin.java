@@ -1,7 +1,9 @@
 package cn.xylose.mitemod.breadskin.mixin.entity;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.*;
+import net.minecraft.EntityLivingBase;
+import net.minecraft.EntityPlayer;
+import net.minecraft.EntityStatsDump;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(EntityStatsDump.class)
 public class EntityStatsDumpMixin {
-    @Shadow private static String newline = new String(System.getProperty("line.separator").getBytes());
+    @Shadow
+    private static String newline = new String(System.lineSeparator().getBytes());
 
     @Inject(
             method = "getStatsDump",

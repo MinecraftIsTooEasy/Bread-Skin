@@ -6,12 +6,13 @@
     "fishmodloader": ">=3.2.2",
     "many-lib": ">=2.0.0"
   },
-  "breaks": {
-    "mite-itf-reborn": "<=17.2.6"
+  "recommends": {
+    "rusted_iron_core": ">=1.3.3"
   },
   "environment": "client",
   "name": "Bread Skin",
-  "description": "",
+  "icon": "pack.png",
+  "description": "面包皮模组, 能够显示饱和度和mite中的营养值",
   "authors": [
     "Xy_Lose",
     "Debris"
@@ -19,6 +20,9 @@
   "entrypoints": {
     "main": [
       "cn.xylose.mitemod.breadskin.BreadSkin"
+    ],
+    "modmenu": [
+      "cn.xylose.mitemod.breadskin.compat.ModMenuImpl"
     ]
   },
   "mixins": [
@@ -26,10 +30,6 @@
   ],
   "accessWidener": "BreadSkin.accesswidener",
   "custom": {
-    "loom:injected_interfaces": {
-      "net/minecraft/EntityClientPlayerMP": [
-        "cn/xylose/mitemod/breadskin/api/BreadSkinClientPlayer"
-      ]
-    }
+    "modmenu:clientsideOnly": true
   }
 }
