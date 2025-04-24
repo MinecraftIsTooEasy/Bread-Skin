@@ -6,10 +6,14 @@ import cn.xylose.mitemod.breadskin.config.EnumNutritionInfoMode;
 import net.minecraft.*;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 public class RenderHud {
-    private static final ResourceLocation icons_breadSkin = new ResourceLocation("textures/gui/icons_breadskin.png");
+    private static final ResourceLocation icons_breadSkin = new ResourceLocation("breadskin","textures/gui/icons_breadskin.png");
+    private static final ResourceLocation icons_vanilla = new ResourceLocation("textures/gui/icons.png");
 
     public static void drawBread(GuiIngame guiIngame, Minecraft mc, Random rand, int par1, int par2) {
         AttributeInstance var10 = mc.thePlayer.getEntityAttribute(SharedMonsterAttributes.maxHealth);
@@ -22,36 +26,38 @@ public class RenderHud {
         int displayY = var13 - (var16 - 1) * var17 - 10 - BreadSkinConfigs.Saturation_Hud_Y.getIntegerValue() * 10;
         int displayYAppleSkin = var13 - (var16 - 1) * var17;
         FoodStats foodStats = mc.thePlayer.getFoodStats();
-        mc.getTextureManager().bindTexture(icons_breadSkin);
         Entity ridingEntity = mc.thePlayer.ridingEntity;
         if (BreadSkinConfigs.Apple_Skin_Mode.getBooleanValue()) {
             if (!(ridingEntity != null && !(ridingEntity instanceof EntityBoat))) {
-                mc.mcProfiler.endStartSection("fullness");
                 int fullness = foodStats.getSatiation();
                 for (int temp = 0; temp < 10; temp++) {
-                    int textureStartPoint = 79;
+                    int textureStartPoint = 45;
                     if (BreadSkinConfigs.Display_Saturation.getBooleanValue()) {
+                        mc.mcProfiler.startSection("fullness");
+                        mc.getTextureManager().bindTexture(icons_breadSkin);
                         if (mc.thePlayer.isPotionActive(Potion.hunger)) {
                             textureStartPoint += 18;
                         }
                         int displayX = var12 - temp * 8 - 9;
                         if (temp * 2 + 1 < fullness) {
-                            guiIngame.drawTexturedModalRect(displayX, displayYAppleSkin, textureStartPoint + 9, 18, 9, 9);
+                            guiIngame.drawTexturedModalRect(displayX, displayYAppleSkin, textureStartPoint + 9, 0, 9, 9);
                         }
                         if (temp * 2 + 1 == fullness) {
-                            guiIngame.drawTexturedModalRect(displayX, displayYAppleSkin, textureStartPoint + 18, 18, 9, 9);
+                            guiIngame.drawTexturedModalRect(displayX, displayYAppleSkin, textureStartPoint + 18, 0, 9, 9);
                         }
+                        mc.mcProfiler.endStartSection("fullness");
                     }
                 }
             }
         } else {
             if (!(ridingEntity != null && !(ridingEntity instanceof EntityBoat))) {
-                mc.mcProfiler.endStartSection("fullness");
                 int fullness = foodStats.getSatiation();
                 for (int temp = 0; temp < 10; temp++) {
-                    int textureStartPoint = 34;
+                    int textureStartPoint = 0;
                     int textureBase = 0;
                     if (BreadSkinConfigs.Display_Saturation.getBooleanValue()) {
+                        mc.mcProfiler.startSection("fullness");
+                        mc.getTextureManager().bindTexture(icons_breadSkin);
                         if (mc.thePlayer.isPotionActive(Potion.hunger)) {
                             textureStartPoint += 27;
                             textureBase = 9;
@@ -61,18 +67,20 @@ public class RenderHud {
                         }
                         int displayX = var12 - temp * 8 - 9;
                         if (temp < mc.thePlayer.getFoodStats().getSatiationLimit() / 2) {
-                            guiIngame.drawTexturedModalRect(displayX, displayY, 34 + textureBase * 3, 18, 9, 9);
+                            guiIngame.drawTexturedModalRect(displayX, displayY, textureBase * 3, 0, 9, 9);
                         }
                         if (temp * 2 + 1 < fullness) {
-                            guiIngame.drawTexturedModalRect(displayX, displayY, textureStartPoint + 9, 18, 9, 9);
+                            guiIngame.drawTexturedModalRect(displayX, displayY, textureStartPoint + 9, 0, 9, 9);
                         }
                         if (temp * 2 + 1 == fullness) {
-                            guiIngame.drawTexturedModalRect(displayX, displayY, textureStartPoint + 18, 18, 9, 9);
+                            guiIngame.drawTexturedModalRect(displayX, displayY, textureStartPoint + 18, 0, 9, 9);
                         }
+                        mc.mcProfiler.endStartSection("fullness");
                     }
                 }
             }
         }
+        mc.getTextureManager().bindTexture(icons_vanilla);
     }
 
     public static void drawAir(GuiIngame guiIngame, Minecraft mc, Random rand, int par1, int par2) {
@@ -95,6 +103,7 @@ public class RenderHud {
         int var26;
         int var27;
         int var28;
+        mc.getTextureManager().bindTexture(icons_vanilla);
         mc.mcProfiler.endStartSection("air");
         if (mc.thePlayer.isInsideOfMaterial(Material.water)) {
             var23 = mc.thePlayer.getAir();
@@ -146,6 +155,7 @@ public class RenderHud {
                 case Mixed -> RenderHud.drawNutrientsBarMixed(gui, mc, var12, var13, nutritionInfo);
                 case Separate -> RenderHud.drawNutrientsBarSeparate(gui, mc, var12, var13, nutritionInfo);
             }
+            mc.getTextureManager().bindTexture(icons_vanilla);
         }
     }
 
@@ -160,15 +170,23 @@ public class RenderHud {
         if (infoMode != EnumNutritionInfoMode.Empty) {
             int limit = RICCompat.getLimit(mc.thePlayer);
             String phytonutrientsString = infoMode.formatter.format(nutritionInfo.phytonutrients(), limit);
-            gui.drawString(fontRenderer, phytonutrientsString, xStartRight, yLevel - 8, 16777215);
+            gui.drawString(fontRenderer, phytonutrientsString, xStartRight, yLevel - 8, 0xFFFFFFFF);
+
             String proteinString = infoMode.formatter.format(nutritionInfo.protein(), limit);
-            gui.drawString(fontRenderer, proteinString, xStartLeft + 109 - fontRenderer.getStringWidth(proteinString), yLevel - 8, 16777215);
+            gui.drawString(fontRenderer, proteinString, xStartLeft + 109 - fontRenderer.getStringWidth(proteinString), yLevel - 8, 0xFFFFFFFF);
+
             String essentialFatsString = infoMode.formatter.format(nutritionInfo.essential_fats(), limit);
             if (BreadSkinConfigs.DrawEssentialFatsNutritionBar.getBooleanValue())
-                gui.drawString(fontRenderer, essentialFatsString, xStartRight, yLevel - 24, 16777215);
+                gui.drawString(fontRenderer, essentialFatsString, xStartRight, yLevel - 24, 0xFFFFFFFF);
+
+            String insulinString = infoMode.formatter.format(mc.thePlayer.getInsulinResistance(), 144000);
+            if (BreadSkinConfigs.DrawInsulinResistanceBar.getBooleanValue())
+                gui.drawString(fontRenderer, insulinString, xStartLeft + 109 - fontRenderer.getStringWidth(proteinString), yLevel - 24, 0xFFFFFFFF);
+
         }
         drawPhytonutrients(gui, mc, xStartRight, yLevel, nutritionInfo.phytonutrients(), true);
         drawProtein(gui, mc, xStartLeft, yLevel, nutritionInfo.protein(), true);
+        drawInsulinResistance(gui, mc, xStartLeft, yLevel - 16, mc.thePlayer.getInsulinResistance(), true);
         drawEssentialFats(gui, mc, xStartRight, yLevel - 16, nutritionInfo.essential_fats(), true);
     }
 
@@ -177,28 +195,38 @@ public class RenderHud {
         int scaledWidth = sr.getScaledWidth();
         int var25 = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
         int var26 = scaledWidth / 2 - 209 + BreadSkinConfigs.BarXOffset.getIntegerValue();
+
         int protein = nutritionInfo.protein();
         int phytonutrients = nutritionInfo.phytonutrients();
-        int essential_fats = nutritionInfo.essential_fats();
-        if (protein > phytonutrients) {
-            drawProtein(gui, mc, var26, var25, protein, true);
-            drawPhytonutrients(gui, mc, var26, var25, phytonutrients, false);
-        } else if (protein < phytonutrients && protein > essential_fats) {
-            drawEssentialFats(gui, mc, var26, var25, essential_fats, false);
-            drawPhytonutrients(gui, mc, var26, var25, phytonutrients, true);
-            drawProtein(gui, mc, var26, var25, protein, false);
-        } else if (essential_fats > phytonutrients && essential_fats > protein) {
-            drawProtein(gui, mc, var26, var25, protein, true);
-            drawPhytonutrients(gui, mc, var26, var25, phytonutrients, false);
-            drawEssentialFats(gui, mc, var26, var25, essential_fats, false);
-        } else {
-            drawEssentialFats(gui, mc, var26, var25, essential_fats, false);
-            drawProtein(gui, mc, var26, var25, protein, true);
-            drawPhytonutrients(gui, mc, var26, var25, phytonutrients, false);
+        int essentialFats = nutritionInfo.essential_fats();
+        int insulinResistance = mc.thePlayer.getInsulinResistance();
+
+        class NutrientEntry {
+            final int value;
+            final Consumer<Boolean> drawMethod;
+
+            NutrientEntry(int value, Consumer<Boolean> drawMethod) {
+                this.value = value;
+                this.drawMethod = drawMethod;
+            }
+        }
+
+        List<NutrientEntry> nutrients = new ArrayList<>();
+        nutrients.add(new NutrientEntry(protein, isPrimary -> drawProtein(gui, mc, var26, var25, protein, isPrimary)));
+        nutrients.add(new NutrientEntry(phytonutrients, isPrimary -> drawPhytonutrients(gui, mc, var26, var25, phytonutrients, isPrimary)));
+        nutrients.add(new NutrientEntry(essentialFats, isPrimary -> drawEssentialFats(gui, mc, var26, var25, essentialFats, isPrimary)));
+        nutrients.add(new NutrientEntry(insulinResistance, isPrimary -> drawInsulinResistance(gui, mc, var26, var25, essentialFats, isPrimary)));
+
+        nutrients.sort((a, b) -> Integer.compare(b.value, a.value));
+
+        for (int i = 0; i < nutrients.size(); i++) {
+            boolean isPrimary = (i == 0);
+            nutrients.get(i).drawMethod.accept(isPrimary);
         }
     }
 
     private static void drawPhytonutrients(Gui gui, Minecraft mc, int x, int y, int phytonutrients, boolean drawBackgound) {
+        mc.mcProfiler.startSection("phytonutrients");
         GL11.glPushMatrix();
         GL11.glScalef(0.6F, 1.0F, 1.0F);
         GL11.glTranslatef(x / 1.5F, 0, 0);
@@ -208,9 +236,11 @@ public class RenderHud {
         }
         gui.drawTexturedModalRect(x, y, 0, 94, (int) (182.0F * getRateNutrient(phytonutrients)), 6);
         GL11.glPopMatrix();
+        mc.mcProfiler.endStartSection("phytonutrients");
     }
 
     private static void drawProtein(Gui gui, Minecraft mc, int x, int y, int protein, boolean drawBackground) {
+        mc.mcProfiler.startSection("protein");
         GL11.glPushMatrix();
         GL11.glScalef(0.6F, 1.0F, 1.0F);
         GL11.glTranslatef(x / 1.5F, 0, 0);
@@ -220,10 +250,12 @@ public class RenderHud {
         }
         gui.drawTexturedModalRect(x, y, 0, 100, (int) (182.0F * getRateNutrient(protein)), 6);
         GL11.glPopMatrix();
+        mc.mcProfiler.startSection("protein");
     }
 
     private static void drawEssentialFats(Gui gui, Minecraft mc, int x, int y, int essential_fats, boolean drawBackground) {
         if (BreadSkinConfigs.DrawEssentialFatsNutritionBar.getBooleanValue()) {
+            mc.mcProfiler.startSection("essential_fats");
             GL11.glPushMatrix();
             GL11.glScalef(0.6F, 1.0F, 1.0F);
             GL11.glTranslatef(x / 1.5F, 0, 0);
@@ -233,8 +265,23 @@ public class RenderHud {
             }
             gui.drawTexturedModalRect(x, y, 0, 112, (int) (182.0F * getRateNutrient(essential_fats)), 6);
             GL11.glPopMatrix();
-        } else {
-            gui.drawString(mc.fontRenderer, "", 0, 0, 16777215);
+            mc.mcProfiler.endStartSection("essential_fats");
+        }
+    }
+
+    private static void drawInsulinResistance(Gui gui, Minecraft mc, int x, int y, int insulin, boolean drawBackground) {
+        if (insulin > 0 && BreadSkinConfigs.DrawInsulinResistanceBar.getBooleanValue()) {
+            mc.mcProfiler.startSection("insulin_resistance");
+            GL11.glPushMatrix();
+            GL11.glScalef(0.6F, 1.0F, 1.0F);
+            GL11.glTranslatef(x / 1.5F, 0, 0);
+            mc.getTextureManager().bindTexture(icons_breadSkin);
+            if (drawBackground) {
+                gui.drawTexturedModalRect(x, y, 0, 106, 182, 6);
+            }
+            gui.drawTexturedModalRect(x, y, 0, 118, (int) (182.0F * getRateNutrient(insulin)), 6);
+            GL11.glPopMatrix();
+            mc.mcProfiler.startSection("insulin_resistance");
         }
     }
 
@@ -247,4 +294,6 @@ public class RenderHud {
         }
         return (float) par1 / limit;
     }
+
+
 }
