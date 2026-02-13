@@ -1,8 +1,11 @@
 package cn.xylose.mitemod.breadskin.render;
 
-import cn.xylose.mitemod.breadskin.compat.RICCompat;
+import cn.xylose.mitemod.breadskin.BreadSkin;
 import cn.xylose.mitemod.breadskin.config.BreadSkinConfigs;
 import cn.xylose.mitemod.breadskin.config.EnumNutritionInfoMode;
+import cn.xylose.mitemod.breadskin.feat.NutritionInfo;
+import cn.xylose.mitemod.breadskin.feat.SyncedNutrition;
+import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.*;
 import org.lwjgl.opengl.GL11;
 
@@ -12,7 +15,7 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 public class RenderHud {
-    private static final ResourceLocation icons_breadSkin = new ResourceLocation("breadskin","textures/gui/icons_breadskin.png");
+    private static final ResourceLocation icons_breadSkin = new ResourceLocation(BreadSkin.RESOURCE_DOMAIN, "textures/gui/icons_breadskin.png");
     private static final ResourceLocation icons_vanilla = new ResourceLocation("textures/gui/icons.png");
 
     public static void drawBread(GuiIngame guiIngame, Minecraft mc, Random rand, int par1, int par2) {
@@ -147,9 +150,9 @@ public class RenderHud {
     }
 
     public static void tryDrawNutritionBar(Gui gui, Minecraft mc, int var12, int var13) {
-        if (BreadSkinConfigs.DrawNutritionBar.getBooleanValue() && RICCompat.ricLoaded) {
+        if (BreadSkinConfigs.DrawNutritionBar.getBooleanValue()) {
             EntityClientPlayerMP player = mc.thePlayer;
-            NutritionInfo nutritionInfo = RICCompat.getNutritionInfo(player);
+            NutritionInfo nutritionInfo = SyncedNutrition.getNutritionInfo(player);
             if (!nutritionInfo.shouldDraw()) return;
             switch (BreadSkinConfigs.NutritionBarMode.getEnumValue()) {
                 case Mixed -> RenderHud.drawNutrientsBarMixed(gui, mc, var12, var13, nutritionInfo);
@@ -160,15 +163,14 @@ public class RenderHud {
     }
 
     public static void drawNutrientsBarSeparate(Gui gui, Minecraft mc, int var12, int var13, NutritionInfo nutritionInfo) {
-        ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-        int scaledWidth = sr.getScaledWidth();
+        int scaledWidth = GuiUtils.getScaledWindowWidth();
         FontRenderer fontRenderer = mc.fontRenderer;
         int yLevel = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
-        int xStartRight = scaledWidth / 2 + 100 + BreadSkinConfigs.BarXOffset.getIntegerValue();
-        int xStartLeft = scaledWidth / 2 - 100 - 109 - BreadSkinConfigs.BarXOffset.getIntegerValue();
+        int xStartRight = scaledWidth / 2 + 100 + RenderConstant.getRightBarXOffset();
+        int xStartLeft = scaledWidth / 2 - 100 - 109 + RenderConstant.getLeftBarXOffset();
         EnumNutritionInfoMode infoMode = BreadSkinConfigs.NutritionInfoMode.getEnumValue();
         if (infoMode != EnumNutritionInfoMode.Empty) {
-            int limit = RICCompat.getLimit(mc.thePlayer);
+            int limit = SyncedNutrition.getNutritionLimit(mc.thePlayer);
             String phytonutrientsString = infoMode.formatter.format(nutritionInfo.phytonutrients(), limit);
             gui.drawString(fontRenderer, phytonutrientsString, xStartRight, yLevel - 8, 0xFFFFFFFF);
 
@@ -191,10 +193,9 @@ public class RenderHud {
     }
 
     public static void drawNutrientsBarMixed(Gui gui, Minecraft mc, int var12, int var13, NutritionInfo nutritionInfo) {
-        ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-        int scaledWidth = sr.getScaledWidth();
+        int scaledWidth = GuiUtils.getScaledWindowWidth();
         int var25 = var13 + 32 + BreadSkinConfigs.BarYOffset.getIntegerValue();
-        int var26 = scaledWidth / 2 - 209 + BreadSkinConfigs.BarXOffset.getIntegerValue();
+        int var26 = scaledWidth / 2 - 209 + RenderConstant.getRightBarXOffset();
 
         int protein = nutritionInfo.protein();
         int phytonutrients = nutritionInfo.phytonutrients();
@@ -286,7 +287,7 @@ public class RenderHud {
     }
 
     public static float getRateNutrient(long par1) {
-        int limit = RICCompat.getLimit(Minecraft.getClientPlayer());
+        int limit = SyncedNutrition.getNutritionLimit(Minecraft.getClientPlayer());
         if (par1 > limit) par1 = limit;
         if (BreadSkinConfigs.SecondaryDecrement.getBooleanValue()) {
             par1 *= par1;

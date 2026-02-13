@@ -1,4 +1,4 @@
-package cn.xylose.mitemod.breadskin.render;
+package cn.xylose.mitemod.breadskin.feat;
 
 public record NutritionInfo(int protein, int phytonutrients, int essential_fats) {
 

@@ -6,10 +6,12 @@ import net.fabricmc.api.ModInitializer;
 import net.xiaoyu233.fml.ModResourceManager;
 
 public class BreadSkin implements ModInitializer {
+    public static final String RESOURCE_DOMAIN = "breadskin";
+
     @Override
     public void onInitialize() {
         BreadSkinConfigs.getInstance().load();
         ConfigManager.getInstance().registerConfig(BreadSkinConfigs.getInstance());
-        ModResourceManager.addResourcePackDomain("breadskin");
+        ModResourceManager.addResourcePackDomain(RESOURCE_DOMAIN);
     }
 }
